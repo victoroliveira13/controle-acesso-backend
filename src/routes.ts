@@ -9,10 +9,29 @@ import { GetAllProductsController } from "./controllers/GetAllProductsController
 import { SessionController } from "./controllers/SessionController";
 import { ensuredAuthenticated } from "./middleware/ensuredAuthenticated";
 import { can, is } from "./middleware/permissions";
+import { GetAllUsersController } from "./controllers/GetAllUsersController";
+import { RemoveUserController } from "./controllers/RemoveUserController";
 
 const routes = Router();
 
-routes.post("/users", new CreateUserController().handle);
+routes.get(
+  "/users",
+  ensuredAuthenticated(),
+  is(["admin"]), //middleware
+  new GetAllUsersController().handle
+);
+routes.post(
+  "/users",
+  ensuredAuthenticated(),
+  new CreateUserController().handle
+);
+routes.delete(
+  "/users/:userId",
+  ensuredAuthenticated(),
+  is(["admin"]), //middleware
+  new RemoveUserController().handle
+);
+
 routes.post("/login", new SessionController().handle);
 
 routes.get("/products", new GetAllProductsController().handle);
