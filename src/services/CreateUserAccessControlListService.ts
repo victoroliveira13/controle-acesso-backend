@@ -11,11 +11,11 @@ type UserACLRequest = {
   permissions: string[];
 };
 
-/* Criar Role
-Pre-condicao: userId, roles e permissions devem existir;
-Pos-condicao: insere permissions e roles a um user;
-Descricao: recebe os ids (userId, roles, permissions):UserACLRequest, verifica a
-existencia dos ids recebidos e os vincula a user.
+/* Vincular permission e role em user
+Pre-condicao: nao ha;
+Pos-condicao: user com novas permissions e roles;
+Descricao: Recebe o id do usuario logado (token bearer), e vincula ao mesmo, as
+permissions e roles passadas.
 */
 export class CreateUserAccessControlListService {
   async execute({

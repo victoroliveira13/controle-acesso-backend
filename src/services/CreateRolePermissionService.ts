@@ -10,7 +10,7 @@ type RolePermissionRequest = {
 Pre-condicao: Role e permission devem existir;
 Pos-condicao: Role com permission;
 Descricao: recebe os ids (roleId, permissions):RolePermissionRequest, e
-vincula na role a permission passada.
+vincula na role obtida por parametro, a permission passada no corpo da requisicao.
 */
 export class CreateRolePermissionService {
   async execute({
