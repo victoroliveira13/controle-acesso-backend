@@ -13,45 +13,56 @@ import { GetAllUsersController } from "./controllers/GetAllUsersController";
 import { RemoveUserController } from "./controllers/RemoveUserController";
 
 const routes = Router();
+routes.post("/login", new SessionController().handle);
 
 routes.get(
   "/users",
   ensuredAuthenticated(),
-  is(["admin"]), //middleware
   new GetAllUsersController().handle
 );
 routes.post(
   "/users",
+  is(["admin"]),
   ensuredAuthenticated(),
   new CreateUserController().handle
 );
 routes.delete(
   "/users/:userId",
   ensuredAuthenticated(),
-  is(["admin"]), //middleware
+  is(["admin"]), 
   new RemoveUserController().handle
 );
 
-routes.post("/login", new SessionController().handle);
-
-routes.get("/products", new GetAllProductsController().handle);
+routes.get(
+  "/products",
+  ensuredAuthenticated(),
+  can(["list_product"]),
+  new GetAllProductsController().handle
+);
 routes.post(
   "/products",
   ensuredAuthenticated(),
-  can(["create_product", "list_product"]), //middleware
+  can(["create_product"]), 
   new CreateProductController().handle
 );
 
 routes.post(
   "/roles",
   ensuredAuthenticated(),
-  //is(["admin"]), //middleware
+  is(["admin"]),
   new CreateRoleController().handle
+);
+routes.post(
+  "/roles/:roleId",
+  ensuredAuthenticated(),
+  is(["admin"]),
+  new CreateRolePermissionController().handle
 );
 
 routes.post(
   "/permissions",
   ensuredAuthenticated(),
+  can(["create_permission"]),
   new CreatePermissionController().handle
 );
 
@@ -60,7 +71,5 @@ routes.post(
   ensuredAuthenticated(),
   new CreateUserAccessControlListController().handle
 );
-
-routes.post("/roles/:roleId", new CreateRolePermissionController().handle);
 
 export { routes };
