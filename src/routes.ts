@@ -8,11 +8,13 @@ import { CreateUserController } from "./controllers/CreateUserController";
 import { GetAllProductsController } from "./controllers/GetAllProductsController";
 import { SessionController } from "./controllers/SessionController";
 import { ensuredAuthenticated } from "./middleware/ensuredAuthenticated";
-import { can, is } from "./middleware/permissions";
 import { GetAllUsersController } from "./controllers/GetAllUsersController";
 import { RemoveUserController } from "./controllers/RemoveUserController";
 import { GetAllPermissionController } from "./controllers/GetAllPermissionController";
 import { RemovePermissionController } from "./controllers/RemovePermissionController";
+import { GetAllRolesController } from "./controllers/GetAllRolesController";
+import { RemoveRoleController } from "./controllers/RemoveRoleController";
+import { can, is } from "./middleware/permissions";
 
 const routes = Router();
 routes.post("/login", new SessionController().handle);
@@ -54,11 +56,17 @@ routes.post(
   is(["admin"]),
   new CreateRoleController().handle
 );
-routes.post(
+routes.get(
+  "/roles",
+  ensuredAuthenticated(),
+  is(["admin"]),
+  new GetAllRolesController().handle
+);
+routes.delete(
   "/roles/:roleId",
   ensuredAuthenticated(),
   is(["admin"]),
-  new CreateRolePermissionController().handle
+  new RemoveRoleController().handle
 );
 
 routes.post(
@@ -84,6 +92,13 @@ routes.post(
   "/users/acl",
   ensuredAuthenticated(),
   new CreateUserAccessControlListController().handle
+);
+
+routes.post(
+  "/roles/:roleId",
+  ensuredAuthenticated(),
+  is(["admin"]),
+  new CreateRolePermissionController().handle
 );
 
 export { routes };
