@@ -11,6 +11,8 @@ import { ensuredAuthenticated } from "./middleware/ensuredAuthenticated";
 import { can, is } from "./middleware/permissions";
 import { GetAllUsersController } from "./controllers/GetAllUsersController";
 import { RemoveUserController } from "./controllers/RemoveUserController";
+import { GetAllPermissionController } from "./controllers/GetAllPermissionController";
+import { RemovePermissionController } from "./controllers/RemovePermissionController";
 
 const routes = Router();
 routes.post("/login", new SessionController().handle);
@@ -64,6 +66,18 @@ routes.post(
   ensuredAuthenticated(),
   can(["create_permission"]),
   new CreatePermissionController().handle
+);
+routes.get(
+  "/permissions",
+  ensuredAuthenticated(),
+  //can(["list_permission"]),
+  new GetAllPermissionController().handle
+);
+routes.delete(
+  "/permissions/:permissionId",
+  ensuredAuthenticated(),
+  //can(["delete_permission"]),
+  new RemovePermissionController().handle
 );
 
 routes.post(
