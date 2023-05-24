@@ -14,10 +14,17 @@ import { GetAllPermissionController } from "./controllers/GetAllPermissionContro
 import { RemovePermissionController } from "./controllers/RemovePermissionController";
 import { GetAllRolesController } from "./controllers/GetAllRolesController";
 import { RemoveRoleController } from "./controllers/RemoveRoleController";
+import { GetUserTokenController } from "./controllers/GetUserTokenController";
 import { can, is } from "./middleware/permissions";
+
 
 const routes = Router();
 routes.post("/login", new SessionController().handle);
+routes.get(
+  "/user/:token",
+  ensuredAuthenticated(),
+  new GetUserTokenController().handle
+);
 
 routes.get(
   "/users",
