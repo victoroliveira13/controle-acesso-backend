@@ -1,9 +1,11 @@
 import { Role } from "../entities/Role";
+import { Permission } from "../entities/Permission";
 import { UserRepository } from "../repositories";
 
-type RoleUserResponse = {
+type ACLUserResponse = {
   user: string;
   roles: RoleResponse[];
+  permissions: PermissionResponse[];
 }
 
 type RoleResponse = {
@@ -11,16 +13,21 @@ type RoleResponse = {
   description: string;
 }
 
+type PermissionResponse = {
+  name: string;
+  description: string;
+}
+
 /* Busca roles relacionadas ao usuário
 Pre-condicao: usuário autenticado (token gerado);
 Pos-condicao: não há;
-Descrição: Busca as roles do usuário
+Descrição: Busca as roles e permissões do usuário
 */
-export class GetRoleUserService {
-  async execute({ id }): Promise<RoleUserResponse | Error> {
+export class GetACLUserService {
+  async execute({ id }): Promise<ACLUserResponse | Error> {
     const userRepo = UserRepository();
 
-    const user = await userRepo.findOne({ id }, { relations: ["roles"] });
+    const user = await userRepo.findOne({ id }, { relations: ["roles", "permissions"] });
 
     if (!user) {
       return new Error("User does not exist!");
@@ -31,9 +38,15 @@ export class GetRoleUserService {
       description: role.description,
     }));
 
+    const permissions: PermissionResponse[] = user.permissions.map((permission: Permission) => ({
+      name: permission.name,
+      description: permission.description,
+    }));
+
     return {
       user: user.username,
       roles: roles,
+      permissions: permissions,
     };
   }
 }

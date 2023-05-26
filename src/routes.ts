@@ -9,7 +9,7 @@ import { GetAllProductsController } from "./controllers/GetAllProductsController
 import { SessionController } from "./controllers/SessionController";
 import { ensuredAuthenticated } from "./middleware/ensuredAuthenticated";
 import { GetAllUsersController } from "./controllers/GetAllUsersController";
-import { GetRoleUserController } from "./controllers/GetRoleUserController";
+import { GetACLUserController } from "./controllers/GetACLUserController";
 import { RemoveUserController } from "./controllers/RemoveUserController";
 import { GetAllPermissionController } from "./controllers/GetAllPermissionController";
 import { RemovePermissionController } from "./controllers/RemovePermissionController";
@@ -101,6 +101,11 @@ routes.post(
   ensuredAuthenticated(),
   new CreateUserAccessControlListController().handle
 );
+routes.get(
+  "/user/acl/:userId",
+  ensuredAuthenticated(),
+  new GetACLUserController().handle
+)
 
 routes.post(
   "/roles/:roleId",
@@ -108,10 +113,5 @@ routes.post(
   is(["admin"]),
   new CreateRolePermissionController().handle
 );
-routes.get(
-  "/roles/:userId",
-  ensuredAuthenticated(),
-  new GetRoleUserController().handle
-)
 
 export { routes };

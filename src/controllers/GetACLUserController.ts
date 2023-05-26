@@ -1,12 +1,12 @@
 import { Request, Response } from "express";
-import { GetRoleUserService } from "../services/GetRoleUserService";
+import { GetACLUserService } from "../services/GetACLUserService";
 
-export class GetRoleUserController {
+export class GetACLUserController {
   async handle(request: Request, response: Response) {
     const { userId: id } = request.params; 
 
-    const getRoleUserService = new GetRoleUserService();
-    const result = await getRoleUserService.execute({ id });
+    const getACLUserService = new GetACLUserService();
+    const result = await getACLUserService.execute({ id });
 
     if (result instanceof Error) {
       return response.status(400).json(result.message);
