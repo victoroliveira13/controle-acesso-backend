@@ -29,6 +29,6 @@ export class SessionService {
       subject: user.id,
     });
 
-    return { token, user: { username } };
+    return { token, user: { id: user.id, username: user.username } };
   }
 }
