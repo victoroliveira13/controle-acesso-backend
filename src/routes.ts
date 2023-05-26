@@ -10,6 +10,7 @@ import { SessionController } from "./controllers/SessionController";
 import { ensuredAuthenticated } from "./middleware/ensuredAuthenticated";
 import { GetAllUsersController } from "./controllers/GetAllUsersController";
 import { GetACLUserController } from "./controllers/GetACLUserController";
+import { GetAllACLUserController } from "./controllers/GetAllACLUserController";
 import { RemoveUserController } from "./controllers/RemoveUserController";
 import { GetAllPermissionController } from "./controllers/GetAllPermissionController";
 import { RemovePermissionController } from "./controllers/RemovePermissionController";
@@ -100,6 +101,12 @@ routes.post(
   "/users/acl",
   ensuredAuthenticated(),
   new CreateUserAccessControlListController().handle
+);
+routes.get(
+  "/users/acl",
+  ensuredAuthenticated(),
+  is(['admin']),
+  new GetAllACLUserController().handle
 );
 routes.get(
   "/user/acl/:userId",
