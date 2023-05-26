@@ -9,6 +9,7 @@ import { GetAllProductsController } from "./controllers/GetAllProductsController
 import { SessionController } from "./controllers/SessionController";
 import { ensuredAuthenticated } from "./middleware/ensuredAuthenticated";
 import { GetAllUsersController } from "./controllers/GetAllUsersController";
+import { GetRoleUserController } from "./controllers/GetRoleUserController";
 import { RemoveUserController } from "./controllers/RemoveUserController";
 import { GetAllPermissionController } from "./controllers/GetAllPermissionController";
 import { RemovePermissionController } from "./controllers/RemovePermissionController";
@@ -107,5 +108,10 @@ routes.post(
   is(["admin"]),
   new CreateRolePermissionController().handle
 );
+routes.get(
+  "/roles/:userId",
+  ensuredAuthenticated(),
+  new GetRoleUserController().handle
+)
 
 export { routes };

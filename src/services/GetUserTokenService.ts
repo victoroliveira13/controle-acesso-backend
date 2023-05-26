@@ -2,6 +2,7 @@ import { UserRepository } from "../repositories";
 import * as jwt from 'jsonwebtoken';
 
 type UserReturned = {
+  id: String;
   username: string;
 }
 
@@ -16,8 +17,8 @@ export class GetUserTokenService {
     const repo = UserRepository();
     const user = await repo.findOne({ id: payload.sub.toString() });
 
-    const { username } = user;
+    const { id, username } = user;
 
-    return { username };
+    return { id, username };
   }
 }
