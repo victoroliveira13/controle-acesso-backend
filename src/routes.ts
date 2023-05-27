@@ -35,8 +35,7 @@ routes.get(
 );
 routes.post(
   "/user",
-  ensuredAuthenticated(),
-  is(["admin"]), 
+  ensuredAuthenticated(), 
   new CreateUserController().handle
 );
 routes.delete(
