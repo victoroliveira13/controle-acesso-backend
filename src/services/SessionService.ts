@@ -1,13 +1,19 @@
 import { compare } from "bcryptjs";
 import { sign } from "jsonwebtoken";
-import { User } from "../entities/User";
-import { getRepository } from "typeorm";
 import { UserRepository } from "../repositories";
+import { Role } from "../entities/Role";
+import { Permission } from "../entities/Permission";
 
 type UserRequest = {
   username: string;
   password: string;
 };
+
+type ACLUserResponse = {
+  name: string;
+  description: string;
+}
+
 
 export class SessionService {
   async execute({ username, password }: UserRequest) {
@@ -29,6 +35,23 @@ export class SessionService {
       subject: user.id,
     });
 
-    return { token, user: { id: user.id, username: user.username } };
+    const acl = await repo.findOne(user.id, { relations: ["roles", "permissions"] });
+
+    const roles: ACLUserResponse[] = acl.roles.map((role: Role) => ({
+      name: role.name,
+      description: role.description,
+    }));
+
+    const permissions: ACLUserResponse[] = acl.permissions.map((permission: Permission) => ({
+      name: permission.name,
+      description: permission.description,
+    }));
+
+    return { token, user: { 
+      id: user.id,
+      username: user.username,
+      roles: roles,
+      permissions: permissions,
+    } };
   }
 }

@@ -1,9 +1,18 @@
 import { UserRepository } from "../repositories";
+import { Role } from "../entities/Role";
+import { Permission } from "../entities/Permission";
 import * as jwt from 'jsonwebtoken';
 
 type UserReturned = {
   id: String;
   username: string;
+  roles: ACLUserResponse[];
+  permissions: ACLUserResponse[];
+}
+
+type ACLUserResponse = {
+  name: string;
+  description: string;
 }
 
 /* Busca usuário relacionado ao token
@@ -19,6 +28,18 @@ export class GetUserTokenService {
 
     const { id, username } = user;
 
-    return { id, username };
+    const acl = await repo.findOne(user.id, { relations: ["roles", "permissions"] });
+
+    const roles: ACLUserResponse[] = acl.roles.map((role: Role) => ({
+      name: role.name,
+      description: role.description,
+    }));
+
+    const permissions: ACLUserResponse[] = acl.permissions.map((permission: Permission) => ({
+      name: permission.name,
+      description: permission.description,
+    }));
+
+    return { id, username, roles, permissions };
   }
 }
