@@ -17,6 +17,7 @@ import { RemovePermissionController } from "./controllers/RemovePermissionContro
 import { GetAllRolesController } from "./controllers/GetAllRolesController";
 import { RemoveRoleController } from "./controllers/RemoveRoleController";
 import { GetUserTokenController } from "./controllers/GetUserTokenController";
+import { GetRolePermissionController } from "./controllers/GetRolePermissionController";
 import { can, is } from "./middleware/permissions";
 
 
@@ -117,6 +118,11 @@ routes.post(
   ensuredAuthenticated(),
   is(["admin"]),
   new CreateRolePermissionController().handle
+);
+routes.get(
+  "/roles/:roleId",
+  ensuredAuthenticated(),
+  new GetRolePermissionController().handle
 );
 
 export { routes };
