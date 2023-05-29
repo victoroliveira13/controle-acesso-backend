@@ -18,7 +18,7 @@ type PermissionResponse = {
   description: string;
 }
 
-/* Busca roles relacionadas ao usuário
+/* Busca roles e permissions relacionadas ao user
 Pre-condicao: usuário autenticado (token gerado);
 Pos-condicao: não há;
 Descrição: Busca as roles e permissões do usuário

@@ -20,109 +20,131 @@ import { GetUserTokenController } from "./controllers/GetUserTokenController";
 import { GetRolePermissionController } from "./controllers/GetRolePermissionController";
 import { can, is } from "./middleware/permissions";
 
+export const routes = Router();
 
-const routes = Router();
-routes.post("/login", new SessionController().handle);
-routes.get(
+/* -------------------------------
+Sessao
+*/
+routes.post( //Criar sessao
+  "/login",
+  new SessionController().handle
+);
+routes.get( //Buscar sessao
   "/user/:token",
   ensuredAuthenticated(),
   new GetUserTokenController().handle
 );
 
-routes.get(
+/* -------------------------------
+User
+*/
+routes.post( //Criar user
+  "/user",
+  new CreateUserController().handle
+);
+routes.get( //Buscar todos os users
   "/users",
   ensuredAuthenticated(),
   new GetAllUsersController().handle
 );
-routes.post(
-  "/user",
-  new CreateUserController().handle
-);
-routes.delete(
+routes.delete( //Deletar user
   "/users/:userId",
   ensuredAuthenticated(),
   is(["admin"]), 
   new RemoveUserController().handle
 );
 
-routes.get(
-  "/products",
-  ensuredAuthenticated(),
-  can(["list_product"]),
-  new GetAllProductsController().handle
-);
-routes.post(
+/* -------------------------------
+Products
+*/
+routes.post( //Criar product
   "/products",
   ensuredAuthenticated(),
   can(["create_product"]), 
   new CreateProductController().handle
 );
+routes.get( //Buscar todos os produtos
+  "/products",
+  ensuredAuthenticated(),
+  can(["list_product"]),
+  new GetAllProductsController().handle
+);
 
-routes.post(
+/* -------------------------------
+Role
+*/
+routes.post( //Criar role
   "/roles",
   ensuredAuthenticated(),
   is(["admin"]),
   new CreateRoleController().handle
 );
-routes.get(
+routes.get( //Buscar todas as roles
   "/roles",
   ensuredAuthenticated(),
   is(["admin"]),
   new GetAllRolesController().handle
 );
-routes.delete(
+routes.delete( //Deletar role
   "/roles/:roleId",
   ensuredAuthenticated(),
   is(["admin"]),
   new RemoveRoleController().handle
 );
 
-routes.post(
+/* -------------------------------
+Permission
+*/
+routes.post( //Criar permission
   "/permissions",
   ensuredAuthenticated(),
   can(["create_permission"]),
   new CreatePermissionController().handle
 );
-routes.get(
+routes.get( //Buscar todas as permissions
   "/permissions",
   ensuredAuthenticated(),
   //can(["list_permission"]),
   new GetAllPermissionController().handle
 );
-routes.delete(
+routes.delete( //Deletar permission
   "/permissions/:permissionId",
   ensuredAuthenticated(),
   //can(["delete_permission"]),
   new RemovePermissionController().handle
 );
 
-routes.post(
+/* -------------------------------
+ACL User
+*/
+routes.post( //Vincular permission e role em user
   "/users/acl",
   ensuredAuthenticated(),
   new CreateUserAccessControlListController().handle
 );
-routes.get(
+routes.get( //Buscar roles e permissions relacionadas aos users
   "/users/acl",
   ensuredAuthenticated(),
   is(['admin']),
   new GetAllACLUserController().handle
 );
-routes.get(
+routes.get( //Buscar roles e permissions relacionadas ao user
   "/user/acl/:userId",
   ensuredAuthenticated(),
   new GetACLUserController().handle
 )
 
-routes.post(
+/* -------------------------------
+ACL Permission / Role
+*/
+routes.post( //Vincular Permission na Role
   "/roles/:roleId",
   ensuredAuthenticated(),
   is(["admin"]),
   new CreateRolePermissionController().handle
 );
-routes.get(
+routes.get( //Buscar Permission na Role
   "/roles/:roleId",
   ensuredAuthenticated(),
   new GetRolePermissionController().handle
 );
-
-export { routes };
