@@ -1,6 +1,6 @@
 import { compare } from "bcryptjs";
 import { sign } from "jsonwebtoken";
-import { UserRepository } from "../repositories";
+import { RoleRepository, UserRepository } from "../repositories";
 import { Role } from "../entities/Role";
 import { Permission } from "../entities/Permission";
 
@@ -46,6 +46,20 @@ export class SessionService {
       name: permission.name,
       description: permission.description,
     }));
+
+    // Obter as permissions da role do user
+    for (const userRole of acl.roles) {
+      const roleRepo = RoleRepository();
+      const roleEntity = await roleRepo.findOne({ name: userRole.name}, { relations: ["permissions"] });
+
+      const rolePermissions: ACLUserResponse[] = roleEntity.permissions.map((permission: Permission) => ({
+        name: permission.name,
+        description: permission.description,
+        origin: "Role",
+      }));
+
+      permissions.push(...rolePermissions);
+    }
 
     return { token, user: { 
       id: user.id,
