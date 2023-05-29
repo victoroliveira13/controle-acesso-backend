@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
-import { UserRepository } from "../repositories";
+import { RoleRepository, UserRepository } from "../repositories";
+import { Permission } from "../entities/Permission";
 
 /* Verifica permissions do user
 Pre-condicao: User existente;
@@ -12,16 +13,25 @@ export function can(permissionsRoutes: string[]) {
 
     const user = await UserRepository().findOne({
       where: { id: userId },
-      relations: ["permissions"],
+      relations: ["roles", "permissions"],
     });
 
     if (!user) {
-      return response.status(400).json("User does not exists");
+      return response.status(400).json("User does not exist");
     }
 
-    const permissionExists = user.permissions
-      .map((permission) => permission.name)
-      .some((permission) => permissionsRoutes.includes(permission));
+    const permissions: string[] = [...user.permissions.map((permission) => permission.name)];
+
+    for (const userRole of user.roles) {
+      const roleRepo = RoleRepository();
+      const roleEntity = await roleRepo.findOne({ name: userRole.name }, { relations: ["permissions"] });
+
+      const rolePermissions: string[] = roleEntity.permissions.map((permission: Permission) => permission.name);
+
+      permissions.push(...rolePermissions);
+    }
+
+    const permissionExists = permissions.some((permission) => permissionsRoutes.includes(permission));
 
     if (!permissionExists) {
       return response.status(401).end();

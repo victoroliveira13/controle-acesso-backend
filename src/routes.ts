@@ -104,7 +104,7 @@ routes.post( //Criar permission
 routes.get( //Buscar todas as permissions
   "/permissions",
   ensuredAuthenticated(),
-  //can(["list_permission"]),
+  can(["list_permission"]),
   new GetAllPermissionController().handle
 );
 routes.delete( //Deletar permission
