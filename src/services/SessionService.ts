@@ -12,6 +12,7 @@ type UserRequest = {
 type ACLUserResponse = {
   name: string;
   description: string;
+  origin: string,
 }
 
 
@@ -40,11 +41,13 @@ export class SessionService {
     const roles: ACLUserResponse[] = acl.roles.map((role: Role) => ({
       name: role.name,
       description: role.description,
+      origin: "User",
     }));
 
     const permissions: ACLUserResponse[] = acl.permissions.map((permission: Permission) => ({
       name: permission.name,
       description: permission.description,
+      origin: "User",
     }));
 
     // Obter as permissions da role do user
