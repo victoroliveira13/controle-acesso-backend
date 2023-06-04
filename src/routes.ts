@@ -3,6 +3,7 @@ import { CreatePermissionController } from "./controllers/CreatePermissionContro
 import { CreateProductController } from "./controllers/CreateProductController";
 import { CreateRoleController } from "./controllers/CreateRoleController";
 import { CreateRolePermissionController } from "./controllers/CreateRolePermissionController";
+import { EditPermissionController } from "./controllers/EditPermissionController";
 import { CreateUserAccessControlListController } from "./controllers/CreateUserAccessControlListController";
 import { CreateUserController } from "./controllers/CreateUserController";
 import { GetAllProductsController } from "./controllers/GetAllProductsController";
@@ -100,6 +101,12 @@ routes.post( //Criar permission
   ensuredAuthenticated(),
   can(["create_permission"]),
   new CreatePermissionController().handle
+);
+routes.put( //Editar permission
+  "/permissions/:permissionId",
+  ensuredAuthenticated(),
+  can(["edit_permission"]),
+  new EditPermissionController().handle
 );
 routes.get( //Buscar todas as permissions
   "/permissions",
