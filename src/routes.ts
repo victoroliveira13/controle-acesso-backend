@@ -2,6 +2,7 @@ import { Router } from "express";
 import { CreatePermissionController } from "./controllers/CreatePermissionController";
 import { CreateProductController } from "./controllers/CreateProductController";
 import { CreateRoleController } from "./controllers/CreateRoleController";
+import { EditRoleController } from "./controllers/EditRoleController";
 import { CreateRolePermissionController } from "./controllers/CreateRolePermissionController";
 import { EditPermissionController } from "./controllers/EditPermissionController";
 import { CreateUserAccessControlListController } from "./controllers/CreateUserAccessControlListController";
@@ -79,6 +80,12 @@ routes.post( //Criar role
   ensuredAuthenticated(),
   is(["admin"]),
   new CreateRoleController().handle
+);
+routes.put( //Editar role
+  "/roles/:roleId",
+  ensuredAuthenticated(),
+  can(["edit_role"]),
+  new EditRoleController().handle
 );
 routes.get( //Buscar todas as roles
   "/roles",
